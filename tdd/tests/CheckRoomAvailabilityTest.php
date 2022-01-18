@@ -28,7 +28,7 @@ class CheckRoomAvailabilityTest extends TestCase
         $room = new Room($roomVar);
         $user = new User($userVar);
 
-        $this->assertEquals($expectedOutput, $room->canBook($user));
+        $this->assertEquals($expectedOutput, $room->canBookPremium($user));
     }
 
     public function dataProviderForBookingDuration() : array
@@ -53,5 +53,29 @@ class CheckRoomAvailabilityTest extends TestCase
         $end = (clone $start)->add(new \DateInterval("PT{$hours}H"));
         $booking->setEndDate($end);
         $this->assertEquals($expectedOutput, $booking->canBeBooked($maxDuration));
+    }
+
+    public function dataProviderForBookingConflicts() : array
+    {
+        $date1 = new \DateTime('2011-01-01T15:03:01.012345Z');
+        $date2 = new \DateTime('2012-09-26');
+        $date3 = new \DateTime('2012-09-26');
+
+        return [
+            [new Bookings($date1), $date1, true],
+            [new Bookings($date1), $date2, false],
+            [new Bookings($date2), $date3, true]
+        ];
+    }
+
+    /**
+     * function has to start with Test
+     * @dataProvider dataProviderForBookingConflicts
+     */
+    public function testBookingConflicts (Bookings $booking, \DateTime $startDate, bool $expectedOutcome): void
+    {
+        $room = new Room(false);
+        $this->assertEquals($expectedOutcome, $room->isBooked($booking, $startDate));
+
     }
 }

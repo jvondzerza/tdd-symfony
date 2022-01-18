@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\BookingsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: BookingsRepository::class)]
 class Bookings
@@ -87,11 +88,9 @@ class Bookings
         return $this;
     }
 
-    public function canBeBooked(int $hours): bool
+    #[Pure] public function canBeBooked(int $hours): bool
     {
-        $start = $this->getStartDate();
-        $end = $this->getEndDate();
-        $diff = (array) date_diff($start, $end);
+        $diff = (array) date_diff($this->getStartDate(), $this->getEndDate());
         return $diff['h'] <= $hours;
     }
 }

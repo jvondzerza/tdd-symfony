@@ -90,8 +90,21 @@ class Room
         return $this;
     }
 
-    public function canBook(User $user): bool
+    #[Pure] public function canBookPremium(User $user): bool
     {
         return ($this->getOnlyForPremiumMembers() && $user->getPremium()) || !$this->getOnlyForPremiumMembers();
+    }
+
+    public function isBooked(Bookings $booking, \DateTime $startDate): bool {
+        $result = false;
+        $this->addBooking($booking);
+        $bookings = $this->getBookings();
+        foreach ($bookings as $iValue) {
+            $diff = (array) date_diff($iValue->getStartDate(), $startDate);
+            if ($diff["y"] = $diff["m"] = $diff["d"] = $diff["h"] === 0) {
+                $result = true;
+            }
+        }
+        return $result;
     }
 }
