@@ -30,9 +30,10 @@ class User
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Bookings::class)]
     private $bookings;
 
-    public function __construct()
+    public function __construct(bool $isPremium)
     {
         $this->bookings = new ArrayCollection();
+        $this->premium = $isPremium;
     }
 
     public function getId(): ?int

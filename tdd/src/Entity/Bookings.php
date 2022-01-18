@@ -27,6 +27,13 @@ class Bookings
     #[ORM\Column(type: 'datetime')]
     private $endDate;
 
+
+    public function __construct($startDate)
+    {
+        $this->startDate = $startDate;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -78,5 +85,13 @@ class Bookings
         $this->endDate = $endDate;
 
         return $this;
+    }
+
+    public function canBeBooked(int $hours): bool
+    {
+        $start = $this->getStartDate();
+        $end = $this->getEndDate();
+        $diff = (array) date_diff($start, $end);
+        return $diff['h'] <= $hours;
     }
 }
